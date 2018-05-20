@@ -1,0 +1,58 @@
+CREATE OR REPLACE PROCEDURE getEmpName 
+   (EMP_ID IN NUMBER, EMP_FIRST OUT VARCHAR) AS
+BEGIN
+   SELECT firstName INTO EMP_FIRST
+   FROM Employees
+   WHERE empId = EMP_ID;
+END;
+===================================================
+
+CREATE OR REPLACE PROCEDURE insertEmployee(
+	   p_empid IN EMPLOYEES.EMPID%TYPE,
+	   p_firstname IN EMPLOYEES.FIRSTNAME%TYPE,
+	   p_lastname IN EMPLOYEES.LASTNAME%TYPE,
+	   p_salary IN EMPLOYEES.SALARY%TYPE)
+IS
+BEGIN
+ 
+  INSERT INTO EMPLOYEES ("EMPID", "FIRSTNAME", "LASTNAME", "SALARY") 
+  VALUES (p_empid, p_firstname,p_lastname, p_salary);
+ 
+  COMMIT;
+ 
+END;
+/
+
+===========================================================
+
+
+CREATE OR REPLACE PROCEDURE updateEmployee(
+	   p_empid IN EMPLOYEES.EMPID%TYPE,
+	   p_firstname IN EMPLOYEES.FIRSTNAME%TYPE,
+	   p_lastname IN EMPLOYEES.LASTNAME%TYPE,
+	   p_salary IN EMPLOYEES.SALARY%TYPE)
+IS
+BEGIN
+ 
+  UPDATE EMPLOYEES SET firstname=p_firstname,lastname=p_lastname, salary=p_salary where empid=p_empid;
+ 
+  COMMIT;
+ 
+END;
+/
+
+===========================================================
+
+
+CREATE OR REPLACE PROCEDURE deleteEmployee(p_empid IN EMPLOYEES.EMPID%TYPE)
+IS
+BEGIN
+ 
+  DELETE FROM EMPLOYEES where empid=p_empid;
+ 
+  COMMIT;
+ 
+END;
+/
+
+===========================================================

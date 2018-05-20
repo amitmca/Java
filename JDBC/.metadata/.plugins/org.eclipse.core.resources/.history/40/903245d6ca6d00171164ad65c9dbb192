@@ -1,0 +1,60 @@
+package com.test.jdbc;
+
+import java.sql.SQLException;
+import javax.sql.RowSetEvent;
+import javax.sql.RowSetListener;
+import javax.sql.rowset.JdbcRowSet;
+import javax.sql.rowset.RowSetProvider;
+ 
+/** Copyright (c), AnkitMittal JavaMadeSoEasy.com */
+public class JdbcRowSetListenerExample {
+    public static void main(String... arg) {
+           JdbcRowSet jdbcRowSet = null;
+           try {
+                  // registering Oracle driver class
+                  Class.forName("oracle.jdbc.OracleDriver");
+ 
+                  //create jdbcRowSet instance
+                  jdbcRowSet = RowSetProvider.newFactory().createJdbcRowSet();
+                  jdbcRowSet.setUrl("jdbc:oracle:thin:@localhost:1521:xe");
+                  jdbcRowSet.setUsername("ankit");
+                  jdbcRowSet.setPassword("Oracle123");
+ 
+                  //Fetch data from database using jdbcRowSet
+                  jdbcRowSet.setCommand("select * from EMPLOYEE");
+                  jdbcRowSet.execute();
+ 
+                   //Adding rowListener 
+                  jdbcRowSet.addRowSetListener(new Listener()); 
+            
+                  //Display fetched data using jdbcRowSet
+                  while (jdbcRowSet.next()) {
+                        System.out.print(jdbcRowSet.getInt("ID") + " ");
+                        System.out.println(jdbcRowSet.getString("NAME"));
+                  }
+
+                   jdbcRowSet.close(); // close jdbcRowSet
+
+           } catch (ClassNotFoundException e) {
+                  e.printStackTrace();
+           } catch (SQLException e) {
+                  e.printStackTrace();
+           }
+    }
+}
+ 
+class Listener implements RowSetListener {
+ 
+    public void rowSetChanged(RowSetEvent event) {
+           System.out.println("Event - jdbcRowSet has changed its contents.");
+    }
+ 
+    public void rowChanged(RowSetEvent event) {
+           System.out.println("Event - jdbcRowSet has change in one of its row.");
+    }
+ 
+    public void cursorMoved(RowSetEvent event) {
+           System.out.println("Event - jdbcRowSet cursor has moved.");
+    } 
+ 
+} 

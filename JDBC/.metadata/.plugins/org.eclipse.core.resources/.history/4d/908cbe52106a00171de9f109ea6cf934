@@ -1,0 +1,56 @@
+package com.test.jdbc;
+
+import java.sql.CallableStatement;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+
+/** Copyright (c), AnkitMittal JavaMadeSoEasy.com */
+public class CallableStatementExampleProcedureIN {
+	public static void main(String... arg) {
+		Connection con = null;
+		CallableStatement callableStmt = null;
+		try {
+			// registering Oracle driver class
+			Class.forName("oracle.jdbc.OracleDriver");
+
+			// getting connection
+			con = DriverManager.getConnection(
+					"jdbc:oracle:thin:@localhost:1521:xe", "system",
+					"123456");
+			System.out.println("Connection established successfully!");
+
+			callableStmt = con
+					.prepareCall("{call MYPROC_EMPLOYEE_INSERT_IN(?,?,?,?)}");
+
+			// IN parameter -
+			// 1) set methods are used for setting IN parameter values of Stored
+			// procedure
+			callableStmt.setInt(1, 11);
+			callableStmt.setString(2, "ankit");
+			callableStmt.setString(3, "12000");
+			callableStmt.setDate(4,
+					new java.sql.Date(new java.util.Date().getTime()));
+
+			// execute database Stored procedure
+			callableStmt.executeUpdate();
+
+			System.out.println("Stored procedure executed successfully, "
+					+ "data has been inserted in Employee table");
+
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if (callableStmt != null)
+					callableStmt.close(); // close CallableStatement
+				if (con != null)
+					con.close(); // close connection
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+}

@@ -1,0 +1,55 @@
+package com.test.jdbc;
+
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+
+public class RetriveImagesExample {
+	public static void main(String... arg) {
+        Connection con = null;
+        PreparedStatement prepStmt = null;
+        FileInputStream fin = null;
+        String imagePath="F:/WriteItOnDVD/Images/prachi.jpg";
+        try {
+               // registering Oracle driver class
+               Class.forName("oracle.jdbc.OracleDriver");
+
+               // getting connection
+               con = DriverManager.getConnection(
+   					"jdbc:oracle:thin:@localhost:1521:xe", "system",
+   					"123456");
+               System.out.println("Connection established successfully!");
+               Statement stmt = con.createStatement();
+               ResultSet rs = stmt.executeQuery("select image_col from test_img where id= 1");
+               int i = 0;
+               while (rs.next()) {
+               InputStream in = rs.getBinaryStream(1);
+               OutputStream f = new FileOutputStream(new File(“test”+i+”.jpg”));
+               i++;
+               int c = 0;
+               while ((c = in.read()) > -1) {
+               f.write(c);
+               }
+               f.close();
+               in.close();
+               
+        } catch (Exception e) {
+               e.printStackTrace();
+        }
+        finally{
+               try {
+                     if(fin!=null) fin.close(); //close file
+                     if(prepStmt!=null) prepStmt.close(); //close PreparedStatement
+                     if(con!=null) con.close(); // close connection
+               } catch (SQLException e) {
+                     e.printStackTrace();
+               } catch (IOException e) {
+                     e.printStackTrace();
+               }
+        }
+}

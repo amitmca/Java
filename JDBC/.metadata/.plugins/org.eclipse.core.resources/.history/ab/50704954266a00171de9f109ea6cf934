@@ -1,0 +1,63 @@
+package com.test.jdbc;
+
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+
+/** Copyright (c), AnkitMittal JavaMadeSoEasy.com */
+public class StoreFileExample {
+	public static void main(String... arg) {
+		Connection con = null;
+		PreparedStatement prepStmt = null;
+		File file = null;
+		FileReader fr = null;
+		String filePath = "c:/myTxt.txt";
+		try {
+			// registering Oracle driver class
+			Class.forName("oracle.jdbc.driver.OracleDriver");
+
+			// getting connection
+			con = DriverManager.getConnection(
+					"jdbc:oracle:thin:@localhost:1521:orcl", "ankit",
+					"Oracle123");
+			System.out.println("Connection established successfully!");
+
+			// create File object
+			file = new File(filePath);
+
+			// create a FileReader object which will read from File
+			fr = new FileReader(file);
+
+			prepStmt = con
+					.prepareStatement("INSERT into TEST_FILES (ID, FILE_COL) "
+							+ "values (1, ?)");
+			prepStmt.setCharacterStream(1, fr);
+			// execute insert query
+			int numberOfRowsInserted = prepStmt.executeUpdate();
+			System.out
+					.println("numberOfRowsInserted = " + numberOfRowsInserted);
+
+			System.out.println(filePath + " > File stored in database");
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if (fr != null)
+					fr.close(); // close reader
+				if (prepStmt != null)
+					prepStmt.close(); // close PreparedStatement
+				if (con != null)
+					con.close(); // close connection
+			} catch (SQLException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+}

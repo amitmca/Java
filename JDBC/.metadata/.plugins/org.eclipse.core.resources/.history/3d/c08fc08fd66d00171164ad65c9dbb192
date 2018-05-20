@@ -1,0 +1,5 @@
+package com.journaldev.jdbc.datasource;
+
+public class MyDataSourceFactory {
+
+}

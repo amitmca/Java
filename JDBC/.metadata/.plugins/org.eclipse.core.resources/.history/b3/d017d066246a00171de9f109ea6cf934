@@ -1,0 +1,56 @@
+package com.test.jdbc;
+
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+
+public class RetriveImagesExample {
+	public static void main(String... arg) {
+        Connection con = null;
+        PreparedStatement prepStmt = null;
+        FileInputStream fin = null;
+        String imagePath="F:/WriteItOnDVD/Images/prachi.jpg";
+        try {
+               // registering Oracle driver class
+               Class.forName("oracle.jdbc.OracleDriver");
+
+               // getting connection
+               con = DriverManager.getConnection(
+   					"jdbc:oracle:thin:@localhost:1521:xe", "system",
+   					"123456");
+               System.out.println("Connection established successfully!");
+               
+               
+               
+               //create FileInputStream object
+               fin=new FileInputStream(imagePath);
+               
+               //prepare insert query
+               prepStmt=con.prepareStatement("INSERT into TEST_IMG (ID, IMAGE_COL) "
+                            + "values (1, ?)");
+               //Substitute first occurrence of ? with fileInputStream
+               prepStmt.setBinaryStream(1, fin);
+               //execute insert query
+               int numberOfRowsInserted = prepStmt.executeUpdate();
+               System.out.println("numberOfRowsInserted = " + numberOfRowsInserted);
+               
+               System.out.println(imagePath+" > Image stored in database");
+               
+        } catch (Exception e) {
+               e.printStackTrace();
+        }
+        finally{
+               try {
+                     if(fin!=null) fin.close(); //close file
+                     if(prepStmt!=null) prepStmt.close(); //close PreparedStatement
+                     if(con!=null) con.close(); // close connection
+               } catch (SQLException e) {
+                     e.printStackTrace();
+               } catch (IOException e) {
+                     e.printStackTrace();
+               }
+        }
+}

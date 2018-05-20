@@ -1,0 +1,60 @@
+package com.test.jdbc;
+
+import java.sql.CallableStatement;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+ 
+/** Copyright (c), AnkitMittal JavaMadeSoEasy.com */
+public class CallableStatementExampleCursor {
+  public static void main(String... arg) {
+      Connection con = null;
+      CallableStatement callableStmt = null;
+      try {
+           // registering Oracle driver class
+           Class.forName("oracle.jdbc.driver.OracleDriver");
+ 
+           // getting connection
+           con = DriverManager.getConnection(
+                    "jdbc:oracle:thin:@localhost:1521:orcl",
+                    "ankit", "Oracle123");
+           System.out.println("Connection established successfully!");
+           
+  
+           callableStmt = con.prepareCall("{call MYPROC_EMPLOYEE_CURSOR(?,?)}");
+ 
+           //IN parameter -
+           //   1) set methods are used for setting IN parameter values of Stored procedure
+           callableStmt.setInt(1, 7);
+           
+           //OUT parameter -
+           //   1) OUT parameters must be registered in java before executing the stored procedure,
+           callableStmt.registerOutParameter(2, java.sql.Types.VARCHAR);
+           
+           //OUT parameter -
+           //   2) Execute database stored procedure, it will execute CURSOR
+           callableStmt.executeUpdate();
+ 
+           //OUT parameter -
+           //   3) Then retrieve values of OUT parameters using using get methods.
+           System.out.println("name = " + callableStmt.getString(2));
+           
+           System.out.println("Stored procedure and CURSOR executed successfully, "
+                    + "data has been fetched from Employee table");
+ 
+      } catch (ClassNotFoundException e) {
+           e.printStackTrace();
+      } catch (SQLException e) {
+           e.printStackTrace();
+      }
+      finally{
+           try {
+               if(callableStmt!=null) callableStmt.close(); //close CallableStatement
+               if(con!=null) con.close(); // close connection
+           } catch (SQLException e) {
+               e.printStackTrace();
+           }
+      }
+  }
+}
+ 
