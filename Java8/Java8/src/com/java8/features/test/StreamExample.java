@@ -14,6 +14,12 @@ public class StreamExample {
                 .collect(Collectors.toList());              // collect the output and convert streams to a List
 
         result.forEach(System.out::println);                //output : spring, node
+        
+        List<Integer> list = Arrays.asList(1,2,3,4,5,6,7,8,9);
+        int sum = list.stream()
+        			.filter(n -> n  > 3)
+        			.collect(Collectors.summingInt(Integer::intValue));
+        System.out.println("Sum is="+sum);
 	}
 
 }

@@ -1,16 +1,22 @@
 package cpm.test.prototype;
 
+import java.util.List;
+
 public class PrototypePatternDemo {
-	   public static void main(String[] args) {
-	      ShapeCache.loadCache();
-
-	      Shape clonedShape = (Shape) ShapeCache.getShape("1");
-	      System.out.println("Shape : " + clonedShape.getType());		
-
-	      Shape clonedShape2 = (Shape) ShapeCache.getShape("2");
-	      System.out.println("Shape : " + clonedShape2.getType());		
-
-	      Shape clonedShape3 = (Shape) ShapeCache.getShape("3");
-	      System.out.println("Shape : " + clonedShape3.getType());		
+	   public static void main(String[] args) throws CloneNotSupportedException {
+		   Employees emps = new Employees();
+			emps.loadEmployeeData();
+			
+			//Use the clone method to get the Employee object
+			Employees empsNew = (Employees) emps.clone();
+			Employees empsNew1 = (Employees) emps.clone();
+			List<String> list = empsNew.getEmpList();
+			list.add("Kasturi");
+			List<String> list1 = empsNew1.getEmpList();
+			list1.remove("Test");
+			
+			System.out.println("emps List: "+emps.getEmpList());
+			System.out.println("empsNew List: "+list);
+			System.out.println("empsNew1 List: "+list1);
 	   }
 	}
